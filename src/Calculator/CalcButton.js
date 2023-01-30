@@ -1,5 +1,6 @@
 import React from "react";
-export default class Button extends React.Component {
+import {Button} from "@mui/material";
+export default class CalcButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,11 +10,13 @@ export default class Button extends React.Component {
     render() {
         return (
             <div>
-                <button className="button" onClick={() => {
+                <Button variant={this.state.symbol === '=' ? "outlined" : "text"}
+                        color={this.state.symbol === '=' ? "info" : "success" }
+                        onClick={() => {
                     this.props.updateData(this.state.symbol);
                 }}>
                     {this.state.symbol}
-                </button>
+                </Button>
             </div>
         );
     }

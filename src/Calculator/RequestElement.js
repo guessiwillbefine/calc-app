@@ -1,6 +1,10 @@
 import React from "react";
+import {Button, TextField} from '@mui/material';
+import './style/style.css';
+import {connect} from "react-redux";
+import getExpressions from "../store/actions";
 
-export default class RequestElement extends React.Component {
+class RequestElement extends React.Component {
 
     constructor(props) {
         super(props);
@@ -11,21 +15,8 @@ export default class RequestElement extends React.Component {
         }
     }
 
-
-    fetchExpressions = () => {
-        const URI = 'http://192.168.0.195:8080/math/examples?count=' + this.state.amount;
-        fetch(URI, {mode: 'cors'})
-            .then(response => response.json())
-            .then(data => {
-                    data.forEach(exp => {
-                        this.setState({body: exp});
-                        this.state.updateData(exp);
-                    })
-                }
-            );
-    }
-
     updateInputValue(evt) {
+        console.log(evt.target.value);
         const value = evt.target.value;
         const isValue = !isNaN(value);
         if (isValue) {
@@ -37,16 +28,31 @@ export default class RequestElement extends React.Component {
 
     render() {
         return (
-            <div>
-                <input type={"button"} className="button"
-                       onClick={
-                           () => {
-                               this.fetchExpressions()
-                           }
-                       }
-                       value={"get example"}/>
-                <input className="input" onChange={evt => this.updateInputValue(evt)}/>
+            <div className="requestContainer">
+                <Button variant={"outlined"}
+                        size="large"
+                        onClick={() => {
+                            this.props.store.dispatch(
+                                getExpressions(this.state.amount));
+                        }
+                        }>get example</Button>
+                <TextField id="filled-basic"
+                           variant="outlined"
+                           size="small"
+                           placeholder="amount"
+                           label="input"
+                           onChange={evt => this.updateInputValue(evt)}/>
             </div>
         );
     }
 }
+
+const mapStateToProps = state => ({
+    ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+    get: (payload) => dispatch(getExpressions(payload))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RequestElement);
